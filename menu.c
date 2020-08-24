@@ -1,18 +1,16 @@
 #include <stdio.h>
 #include <unistd.h>
-
+#include <sys/types.h>
+#include <stdlib.h>
 int G;
 char comensal[20];
 void guardar1(char nombre[50], char comensal[20], char com [100]);
 void guardar2(char nombre[50], char comensal[20], char com [100]);
 void guardar3(char nombre[50], char comensal[20], char com [100]);
-void guardar4(char nombre[50], char comensal[20], char com [100]);
-void guardar5(char nombre[50], char comensal[20], char com [100]);
-void guardar6(char nombre[50], char comensal[20], char com [100]);
 
 int main(void) {
-
-pid_t pidC;
+	pid_t pid1, pid2;
+    int status1, status2, i;
    
 
 	printf("Bienvenido. \n");
@@ -36,66 +34,88 @@ pid_t pidC;
 	switch(G)
 		{
 		case 1:
-			if(pidC>0){
+			if((pid1=fork())==0){ //como solo se selecciona una opcion no se utiliza el hijo
+
 			}
-			else if(pidC==0){
-			printf("El desayuno es: \n");
-				printf("Hot cakes, fruta con yoghurt y jugo de naranja.\n");
-                guardar1(" desayuno ", comensal, "Hot cakes, fruta con yoghurt, jugo de naranja.\n");
-				break;
+			else
+			{
+				//wait(&status1);
+				printf("El desayuno es: \n");
+				printf("Hot cakes, fruta con yoghurt y jugo de naranja. proceso:%d\n", getpid());
+                
+                //break;
 			}
+		
+			guardar1(" desayuno ", comensal, "Hot cakes, fruta con yoghurt, jugo de naranja.\n");
+			exit(0);
 			break;
 		case 2:
-			if(pidC>0){
+			if((pid1=fork())==0){ //como solo se selecciona una opcion no se utiliza el hijo
+
 			}
-			else if(pidC==0){
-			printf("La comida es: \n");
-				printf("Arrachera con queso fundido.\n");
-                guardar2(" comida ", comensal, "Arrachera con queso fundido.\n");
-				break;
+			else
+			{
+				//wait(&status1);
+				printf("la comida es arrachera con queso fundido proceso %d.\n", getpid());
+				guardar2(" comida ", comensal, "Arrachera con queso fundido.\n");
 			}
+			exit(0);
 			break;
 		case 3:
-			if(pidC>0){
-			}
-			else if(pidC==0){
-			printf("La cena es: \n");
-				printf("Empanada de atun y cafe.\n");
-                guardar3(" cena ", comensal, "Empanada de atun y cafe.\n");
+			if((pid1=fork())==0){ //como solo se selecciona una opcion no se utiliza el hijo
 
-				break;
 			}
+			else
+			{
+				//wait(&status1);
+				printf("la cena es Empanada de atun y cafe %d.\n", getpid());
+				guardar3(" cena ", comensal, "Empanada de atun y cafe.\n");
+			}
+			exit(0);
 			break;
 		case 4:
-			if(pidC>0){
+			if((pid1=fork())==0){ 
+				printf("El desayuno es: \n");
+				printf("Hot cakes, fruta con yoghurt, jugo de naranja proceso %d\n", getpid());
+				guardar1(" desayuno ", comensal, "Hot cakes, fruta con yoghurt, jugo de naranja.\n");
 			}
-			else if(pidC==0){
-			printf("El desayuno y la comida es: \n");
-				printf("Hot cakes, fruta con yoghurt, jugo de naranja y arrachera con queso fundido.\n");
-				guardar4(" desayuno_comida ", comensal, "Hot cakes, fruta con yoghurt, jugo de naranja y arrachera con queso fundido.\n");
-				break;
+			else{
+				wait(&status1);
+				printf("la comida es arrachera con queso fundido proceso %d.\n", getpid());
+				guardar2(" comida ", comensal, "Arrachera con queso fundido.\n");
 			}
+			exit(0);
 			break;
 		case 5:
-			if(pidC>0){
+			if((pid1=fork())==0){ 
+				printf("la comida es arrachera con queso fundido proceso %d.\n", getpid());
+				guardar2(" comida ", comensal, "Arrachera con queso fundido.\n");
 			}
-			else if(pidC==0){
-			printf("La comida y la cena es: \n");
-				printf("Arrachera con queso fundido con empanada de atun y cafe .\n");
-				guardar5(" comida_cena ", comensal, "arrachera con queso fundido con empanada de atun y cafe.\n");
-
-				break;
+			else{
+				wait(&status1);
+				printf("la cena es Empanada de atun y cafe %d.\n", getpid());
+				guardar3(" cena ", comensal, "Empanada de atun y cafe.\n");
 			}
+			exit(0);
 			break;
 		case 6:	
-			if(pidC>0){
+			if((pid1=fork())==0){ 
+				if((pid1=fork())==0){
+					printf("la cena es Empanada de atun y cafe %d.\n", getpid());
+					guardar3(" cena ", comensal, "Empanada de atun y cafe.\n");
+				}
+				else{
+					wait(&status2);
+					printf("la comida es arrachera con queso fundido proceso %d.\n", getpid());
+					guardar2(" comida ", comensal, "Arrachera con queso fundido.\n");
+				}
 			}
-			else if(pidC==0){
-			    printf("El desayuno, la comida y cena es: \n");
-				printf("Hot cakes, fruta con yoghurt, jugo de naranja, arrachera con queso fundido con empanada de atun y cafe.\n");
-                guardar6(" desayuno_comida_cena ", comensal, "Hot cakes, fruta con yoghurt, jugo de naranja, arrachera con queso fundido con empanada de atun y cafe.\n");
-				break;
+			else{
+				wait(&status1);
+				printf("la cena es Empanada de atun y cafe %d.\n", getpid());
+				guardar1(" desayuno ", comensal, "Hot cakes, fruta con yoghurt, jugo de naranja.\n");
 			}
+			exit(0);
 			break;
 		default: 
 			return 0;
@@ -134,34 +154,6 @@ void guardar3(char nom[50], char comensal[20], char com [100]){
     return;
 }
 
-void guardar4(char nom[50], char comensal[20], char com [100]){
-    FILE* fichero;
-    fichero = fopen("desayuno_comida.txt", "a+");
-    fputs(comensal, fichero);
-    fputs(nom, fichero);
-    fputs(com, fichero);
-    fclose(fichero);
-    return;
-}
 
-void guardar5(char nom[50], char comensal[20], char com [100]){
-    FILE* fichero;
-    fichero = fopen("comida_cena.txt", "a+");
-    fputs(comensal, fichero);
-    fputs(nom, fichero);
-    fputs(com, fichero);
-    fclose(fichero);
-    return;
-}
-
-void guardar6(char nom[50], char comensal[20], char com [100]){
-    FILE* fichero;
-    fichero = fopen("desayuno_comida_cena.txt", "a+");
-    fputs(comensal, fichero);
-    fputs(nom, fichero);
-    fputs(com, fichero);
-    fclose(fichero);
-    return;
-}
 
 
